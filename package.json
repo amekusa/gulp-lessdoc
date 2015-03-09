@@ -1,0 +1,35 @@
+{
+  "name": "gulp-lessdoc",
+  "version": "0.1.0",
+  "description": "Less documentation tool for Gulp",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git@bitbucket.org:amekusa/gulp-lessdoc.git"
+  },
+  "keywords": [
+    "gulpplugin",
+    "gulp",
+    "less"
+  ],
+  "author": {
+    "name": "amekusa <post@amekusa.com>"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "markdown-it": "*",
+    "less": "^2.1.1"
+  },
+  "devDependencies": {
+    "markdown-it": "*",
+    "less": "^2.1.1"
+  },
+  "maintainers": [
+    {
+      "name": "amekusa",
+      "email": "post@amekusa.com"
+    }
+  ],
+  "directories": {},
+  "readme": "ERROR: No README data found!"
+}
