@@ -1,12 +1,10 @@
 /*!
- * Bootstrap Grunt task for parsing Less docstrings
- * http://getbootstrap.com
- * Copyright 2014 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * gulp-lessdoc
  */
 'use strict';
 
 var Markdown = require('markdown-it');
+var through = require('through2');
 
 function markdown2html(markdownString) {
   var md = new Markdown();
@@ -38,6 +36,13 @@ var SUBSECTION_HEADING = /^[/]{2}={3}(.*)$/;
 var SECTION_DOCSTRING = /^[/]{2}#{2}(.+)$/;
 var VAR_ASSIGNMENT = /^(@[a-zA-Z0-9_-]+):[ ]*([^ ;][^;]*);[ ]*$/;
 var VAR_DOCSTRING = /^[/]{2}[*]{2}(.+)$/;
+
+//var CUSTOMIZABLE_HEADING = /^[/]{1}[*]{2}(.*)$/;
+//var UNCUSTOMIZABLE_HEADING = /^[/]{2}-{2}(.*)$/;
+//var SUBSECTION_HEADING = /^[/]{2}={3}(.*)$/;
+//var SECTION_DOCSTRING = /^[/]{2}#{2}(.+)$/;
+//var VAR_ASSIGNMENT = /^(@[a-zA-Z0-9_-]+):[ ]*([^ ;][^;]*);[ ]*$/;
+//var VAR_DOCSTRING = /^[/]{2}[*]{2}(.+)$/;
 
 function Section(heading, customizable) {
   this.heading = heading.trim();
@@ -235,4 +240,31 @@ Parser.prototype.parseVar = function () {
 };
 
 
-module.exports = Parser;
+//module.exports = Parser;
+module.exports = function (opts) {
+	opts = opts || {};
+
+	return through.obj(function (file, enc, cb) {
+		if (file.isNull()) {
+			cb(null, file);
+			return;
+		}
+
+		if (file.isStream()) {
+			cb(new gutil.PluginError('gulp-lessdoc', 'Streaming not supported'));
+			return;
+		}
+
+		try {
+			//process.stdout.write(file.contents); // debug
+			var parser = new Parser(file.contents.toString());
+			file.contents = new Buffer(parser.parseFile());
+			this.push(file);
+
+		} catch (err) {
+			this.emit('error', new gutil.PluginError('gulp-lessdoc', err, {fileName: file.path}));
+		}
+
+		cb();
+	});
+};
